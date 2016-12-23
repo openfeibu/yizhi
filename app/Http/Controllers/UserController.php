@@ -20,7 +20,12 @@ class UserController extends Controller
 		if($saveUser == 200){
 			return [
 				'code'=>200,
-				'detail'=>"请求成功"
+				'detail'=>"请求成功",
+				'data' => [
+					'openid' => $request->openid,
+					'nickname' => $request->nickname,
+					'img_url' => $request->img,
+				]
 			];
 		}else{
 			return [
