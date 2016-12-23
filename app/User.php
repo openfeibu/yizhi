@@ -26,6 +26,7 @@ class User extends Model implements AuthenticatableContract,
             $openid_user->img_url = $img_url;
             $openid_user->sex = $sex;
             $openid_user->city = $city;
+            $openid_user->created_at = date('Y-m-d H:i:s');
             if($openid_user->save()){
                 return 200;
             }else{
