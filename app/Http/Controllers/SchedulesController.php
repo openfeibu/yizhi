@@ -23,6 +23,15 @@ class SchedulesController extends Controller
 	}
 
     public function getSchedulesList(Request $request){
+        $rules = [
+            'openid' => 'required',
+            'start' => 'required',
+            'end' => 'required',
+            'time' => 'required',
+        ];
+        if($this->validateParameter($request,$rules)!= 200){
+            return $this->validateParameter($request,$rules);
+        }
         if($this->checkOpenid($request) != 200){
             return $this->checkOpenid($request);
         }
@@ -31,6 +40,21 @@ class SchedulesController extends Controller
             if(empty($list['overplus'])){
                 $list['overplus'] = $list['seat_number'];
             }
+            if(!empty($list['time_start']) && !empty($list['time_end'])){
+                if(strtotime($list['time_start'])<=strtotime($request->time) && strtotime($list['time_end'])>=strtotime($request->time)){}else{
+                    unset($getSchedulesList[$key]);
+                }
+            }elseif(empty($list['time_start']) && !empty($list['time_end'])){
+                if(strtotime($list['time_end'])<=strtotime($request->time)){}else{
+                    unset($getSchedulesList[$key]);
+                }
+            }elseif(!empty($list['time_start']) && empty($list['time_end'])){
+                if(strtotime($list['time_start'])>=strtotime($request->time)){}else{
+                    unset($getSchedulesList[$key]);
+                }
+            }
+            unset($list['time_start']);
+            unset($list['time_end']);
         }
         return [
             'code'=>200,

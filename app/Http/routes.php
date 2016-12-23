@@ -19,7 +19,7 @@ Route::get('user/handleLogin', 'UserController@handleLogin')->name('user_handleL
 Route::get('place/getMaxPlace', 'PlaceController@getMaxPlace')->name('place_getMaxPlace');
 Route::get('place/getNextPlace', 'PlaceController@getNextPlace')->name('place_getNextPlace');
 Route::get('schedules/getSchedulesAll', 'SchedulesController@getSchedulesAll')->name('schedules_getSchedulesAll');
-Route::get('schedules/getSchedulesList', 'SchedulesController@getSchedulesList')->name('schedules_getSchedulesList');
+Route::post('schedules/getSchedulesList', 'SchedulesController@getSchedulesList')->name('schedules_getSchedulesList');
 
 Route::get('getServicePhone', 'ServicePhoneController@getServicePhone')->name('getServicePhone');
 Route::get('getUserNotice', 'CommonController@getUserNotice')->name('getUserNotice');
