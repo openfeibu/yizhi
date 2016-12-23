@@ -27,7 +27,6 @@ class SchedulesController extends Controller
             'openid' => 'required',
             'start' => 'required',
             'end' => 'required',
-            'time' => 'required',
         ];
         if($this->validateParameter($request,$rules)!= 200){
             return $this->validateParameter($request,$rules);
@@ -35,21 +34,26 @@ class SchedulesController extends Controller
         if($this->checkOpenid($request) != 200){
             return $this->checkOpenid($request);
         }
-        $getSchedulesList  = Schedules::getSchedulesList($request->start,$request->end,$request->time);
+        if(empty($request->time)){
+            $time = date('Y-m-d');
+        }else{
+            $time = $request->time;
+        }
+        $getSchedulesList  = Schedules::getSchedulesList($request->start,$request->end,$time);
         foreach ($getSchedulesList as $key => $list) {
             if(empty($list['overplus'])){
                 $list['overplus'] = $list['seat_number'];
             }
             if(!empty($list['time_start']) && !empty($list['time_end'])){
-                if(strtotime($list['time_start'])<=strtotime($request->time) && strtotime($list['time_end'])>=strtotime($request->time)){}else{
+                if(strtotime($list['time_start'])<=strtotime($time) && strtotime($list['time_end'])>=strtotime($time)){}else{
                     unset($getSchedulesList[$key]);
                 }
             }elseif(empty($list['time_start']) && !empty($list['time_end'])){
-                if(strtotime($list['time_end'])<=strtotime($request->time)){}else{
+                if(strtotime($list['time_end'])<=strtotime($time)){}else{
                     unset($getSchedulesList[$key]);
                 }
             }elseif(!empty($list['time_start']) && empty($list['time_end'])){
-                if(strtotime($list['time_start'])>=strtotime($request->time)){}else{
+                if(strtotime($list['time_start'])>=strtotime($time)){}else{
                     unset($getSchedulesList[$key]);
                 }
             }
@@ -62,4 +66,30 @@ class SchedulesController extends Controller
             'data' => $getSchedulesList
         ];
     }
+
+    public function getSchedulesOne(Request $request){
+        $rules = [
+            'openid' => 'required',
+            'car_id' => 'required',
+        ];
+        if($this->validateParameter($request,$rules)!= 200){
+            return $this->validateParameter($request,$rules);
+        }
+        if($this->checkOpenid($request) != 200){
+            return $this->checkOpenid($request);
+        }
+        if(empty($request->time)){
+            $time = date('Y-m-d');
+        }else{
+            $time = $request->time;
+        }
+        $getSchedulesOne  = Schedules::getSchedulesOne($request->car_id,$time);
+        $getSchedulesOne['time'] = $time." ".$getSchedulesOne['time'];
+        return [
+            'code'=>200,
+            'detail'=>"请求成功",
+            'data' => $getSchedulesOne
+        ];
+    }
+
 }

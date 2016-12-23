@@ -20,6 +20,7 @@ Route::get('place/getMaxPlace', 'PlaceController@getMaxPlace')->name('place_getM
 Route::get('place/getNextPlace', 'PlaceController@getNextPlace')->name('place_getNextPlace');
 Route::get('schedules/getSchedulesAll', 'SchedulesController@getSchedulesAll')->name('schedules_getSchedulesAll');
 Route::post('schedules/getSchedulesList', 'SchedulesController@getSchedulesList')->name('schedules_getSchedulesList');
+Route::get('schedules/getSchedulesOne', 'SchedulesController@getSchedulesOne')->name('schedules_getSchedulesOne');
 
 Route::get('getServicePhone', 'ServicePhoneController@getServicePhone')->name('getServicePhone');
 Route::get('getUserNotice', 'CommonController@getUserNotice')->name('getUserNotice');

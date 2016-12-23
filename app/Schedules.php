@@ -24,7 +24,7 @@ class Schedules extends Model implements AuthenticatableContract,
     }
  
     public static function getSchedulesList($start , $end , $time){
-		return Schedules::select(DB::raw('adminschedules.id,adminschedules.time,adminschedules.start_place,adminschedules.end_place,adminschedules.seat_number,adminschedules.price,overPlus.overplus,adminschedules.time_start,adminschedules.time_end'))
+		return Schedules::select(DB::raw('adminschedules.id as car_id,adminschedules.time,adminschedules.start_place,adminschedules.end_place,adminschedules.seat_number,adminschedules.price,overPlus.overplus,adminschedules.time_start,adminschedules.time_end'))
                         ->leftJoin('overPlus', function($join) {
                                 $join->on('adminschedules.id', '=', 'overPlus.schedules_id')
                                      ->where('overPlus.time','=','2016-09-09');
@@ -35,6 +35,18 @@ class Schedules extends Model implements AuthenticatableContract,
                         ->whereNull('deleted_at')
                         ->orderBy('adminschedules.time','asc')
 					    ->get();
+    }
+
+    public static function getSchedulesOne($car_id , $time){
+        return Schedules::select(DB::raw('adminschedules.id as car_id,adminschedules.time,adminschedules.start_place,adminschedules.end_place,adminschedules.seat_number,adminschedules.price,overPlus.overplus'))
+                        ->leftJoin('overPlus', function($join) {
+                                $join->on('adminschedules.id', '=', 'overPlus.schedules_id')
+                                     ->where('overPlus.time','=','2016-09-09');
+                        })
+                        ->where('adminschedules.id', $car_id)
+                        ->where('status', 1)
+                        ->whereNull('deleted_at')
+                        ->first();
     }
 
 }
