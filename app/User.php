@@ -19,9 +19,9 @@ class User extends Model implements AuthenticatableContract,
     protected $table = 'users';
 
     public static function saveUser($openid,$nickname,$img_url,$sex,$city){
-        $openid_user = User::where('wechat_openid',$openid)->first();
+        $openid_user = User::where('openid',$openid)->first();
         if($openid_user){
-            $openid_user->wechat_openid = $openid;
+            $openid_user->openid = $openid;
             $openid_user->nickname = $nickname;
             $openid_user->img_url = $img_url;
             $openid_user->sex = $sex;
@@ -33,7 +33,7 @@ class User extends Model implements AuthenticatableContract,
             }
         }else{
             $user = new User;
-            $user->wechat_openid = $openid;
+            $user->openid = $openid;
             $user->nickname = $nickname;
             $user->img_url = $img_url;
             $user->sex = $sex;
