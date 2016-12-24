@@ -30,7 +30,7 @@ class OrderController extends Controller
             $time = $request->time;
         }
 
-        $bookOrder = Order::bookOrder($request->openid,$request->car_id,$request->mobile,$request->username,$request->number,$time);
+        $bookOrder = Order::bookOrder($request->openid,$request->car_id,$request->mobile,$request->username,$request->number,$time,$request->start_details,$request->end_details);
         return [
             'code'=>200,
             'detail'=>"请求成功",

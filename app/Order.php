@@ -22,7 +22,7 @@ class Order extends Model implements AuthenticatableContract,
     use Authenticatable, Authorizable, CanResetPassword;
     protected $table = 'adminorder';
 
-    public static function bookOrder($openid,$car_id,$mobile,$username,$number,$time){
+    public static function bookOrder($openid,$car_id,$mobile,$username,$number,$time,$start_details,$end_details){
     	Session::set('time',$time);
     	$getSchedulesOne = Schedules::select(DB::raw('adminschedules.id as car_id,adminschedules.time,adminschedules.start_place,adminschedules.end_place,adminschedules.seat_number,adminschedules.price,overPlus.overplus'))
                         ->leftJoin('overPlus', function($join) {
@@ -51,6 +51,8 @@ class Order extends Model implements AuthenticatableContract,
         $order->number = $number;
         $order->all_price = $getSchedulesOne['price']*$number;
         $order->price = $getSchedulesOne['price'];
+        $order->start_details = $start_details;
+        $order->end_details = $end_details;
         $order->save();
 
         return "YZ".date('YmdHis').$user->id;
