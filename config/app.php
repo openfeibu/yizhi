@@ -194,5 +194,6 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
 
     ],
-
+ 	//ÊÇ·ñÔÊÐí¿çÓòÇëÇó
+    'allow_origin' => env('allow_origin', 'http://192.168.0.129'),
 ];
