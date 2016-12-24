@@ -83,8 +83,12 @@ class SchedulesController extends Controller
         }else{
             $time = $request->time;
         }
+
         $getSchedulesOne  = Schedules::getSchedulesOne($request->car_id,$time);
         $getSchedulesOne['time'] = $time." ".$getSchedulesOne['time'];
+        if(empty($getSchedulesOne['overplus'])){
+            $getSchedulesOne['overplus'] = $getSchedulesOne['seat_number'];
+        }
         return [
             'code'=>200,
             'detail'=>"请求成功",

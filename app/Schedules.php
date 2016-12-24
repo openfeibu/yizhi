@@ -11,6 +11,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use App\Schedules;
 use DB;
+use Session;
 
 class Schedules extends Model implements AuthenticatableContract,
                                     AuthorizableContract,
@@ -24,10 +25,11 @@ class Schedules extends Model implements AuthenticatableContract,
     }
  
     public static function getSchedulesList($start , $end , $time){
+        Session::set('time',$time);
 		return Schedules::select(DB::raw('adminschedules.id as car_id,adminschedules.time,adminschedules.start_place,adminschedules.end_place,adminschedules.seat_number,adminschedules.price,overPlus.overplus,adminschedules.time_start,adminschedules.time_end'))
                         ->leftJoin('overPlus', function($join) {
                                 $join->on('adminschedules.id', '=', 'overPlus.schedules_id')
-                                     ->where('overPlus.time','=','2016-09-09');
+                                     ->where('overPlus.time','=',Session::get('time'));
                         })
                         ->where('start_place', 'like','%'.$start.'%')
                         ->where('end_place', 'like','%'.$end.'%')
@@ -38,10 +40,11 @@ class Schedules extends Model implements AuthenticatableContract,
     }
 
     public static function getSchedulesOne($car_id , $time){
+        Session::set('time',$time);
         return Schedules::select(DB::raw('adminschedules.id as car_id,adminschedules.time,adminschedules.start_place,adminschedules.end_place,adminschedules.seat_number,adminschedules.price,overPlus.overplus'))
                         ->leftJoin('overPlus', function($join) {
                                 $join->on('adminschedules.id', '=', 'overPlus.schedules_id')
-                                     ->where('overPlus.time','=','2016-09-09');
+                                     ->where('overPlus.time','=',Session::get('time'));
                         })
                         ->where('adminschedules.id', $car_id)
                         ->where('status', 1)

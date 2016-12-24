@@ -24,3 +24,5 @@ Route::get('schedules/getSchedulesOne', 'SchedulesController@getSchedulesOne')->
 
 Route::get('getServicePhone', 'ServicePhoneController@getServicePhone')->name('getServicePhone');
 Route::get('getUserNotice', 'CommonController@getUserNotice')->name('getUserNotice');
+
+Route::post('order/bookOrder', 'OrderController@bookOrder')->name('bookOrder');
