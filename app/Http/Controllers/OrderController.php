@@ -17,6 +17,8 @@ class OrderController extends Controller
             'mobile' => 'required',
             'username' => 'required',
             'number' => 'required',
+            'start_details' => 'required',
+            'end_details' => 'required',
         ];
         if($this->validateParameter($request,$rules)!= 200){
             return $this->validateParameter($request,$rules);

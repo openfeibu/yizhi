@@ -31,8 +31,8 @@ class Schedules extends Model implements AuthenticatableContract,
                                 $join->on('adminschedules.id', '=', 'overPlus.schedules_id')
                                      ->where('overPlus.time','=',Session::get('time'));
                         })
-                        ->where('start_place', 'like','%'.$start.'%')
-                        ->where('end_place', 'like','%'.$end.'%')
+                        ->where('start_place', $start)
+                        ->where('end_place', $end)
                         ->where('status', 1)
                         ->whereNull('deleted_at')
                         ->orderBy('adminschedules.time','asc')
