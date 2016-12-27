@@ -12,6 +12,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use App\User;
 use App\Order;
 use App\Schedules;
+use App\Overplus;
 use Session;
 use DB;
 
@@ -21,6 +22,11 @@ class Order extends Model implements AuthenticatableContract,
 {
     use Authenticatable, Authorizable, CanResetPassword;
     protected $table = 'adminorder';
+
+    public static function getOverplus($overplus){
+        $over = Overplus::where('schedules_id',$overplus)->first();
+        return $over->overplus;
+    }
 
     public static function bookOrder($openid,$car_id,$mobile,$username,$number,$time,$start_details,$end_details){
     	Session::set('time',$time);
@@ -55,6 +61,9 @@ class Order extends Model implements AuthenticatableContract,
         $order->end_details = $end_details;
         $order->save();
 
-        return "YZ".date('YmdHis').$user->id;
+        return [
+            'order_num' => "YZ".date('YmdHis').$user->id,
+            'all_price' => $getSchedulesOne['price']*$number,
+        ];
     }
 }

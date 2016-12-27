@@ -7,6 +7,7 @@ use Log;
 use App\Http\Controllers\Controller;
 use App\Order;
 use DB;
+use App\Http\Controllers\CommonController;
 
 class OrderController extends Controller
 {
@@ -31,14 +32,24 @@ class OrderController extends Controller
         }else{
             $time = $request->time;
         }
-
+        $overplus = Order::getOverplus($request->car_id);
+        if($request->number > $overplus){
+            return [
+                'code'=>403,
+                'detail'=>"余票不足",
+                'data' => $overplus
+            ];
+        }
         $bookOrder = Order::bookOrder($request->openid,$request->car_id,$request->mobile,$request->username,$request->number,$time,$request->start_details,$request->end_details);
-        return [
-            'code'=>200,
-            'detail'=>"请求成功",
-            'data' => [
-                'order_num' => $bookOrder,
-            ]
-        ];
+        // return [
+        //     'code'=>200,
+        //     'detail'=>"请求成功",
+        //     'data' => $bookOrder
+        // ];
+        $content = $request->start_details."--".$request->end_details;
+        header("Location:http://yizhi.feibu.info/wechat/weChatPay/example/jsapi.php?content=".$content."&price=".$bookOrder['all_price']."&order_num=".$bookOrder['order_num']."");
+
     }
+
+
 }
