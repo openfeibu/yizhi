@@ -13,11 +13,7 @@ $tools = new JsApiPay();
 $openId = $tools->GetOpenid();
 
 //存储商户号到数据库
-// $conn = mysql_connect('211.66.88.168','zhijie','bgyrtksithv,1*&($AC');
-// mysql_select_db('yizhi',$conn);
 $sql = "update adminorder set out_trade_no = '".WxPayConfig::MCHID.date("YmdHis")."' where order_num = '".$_GET['order_num']."'";
-// mysql_query($sql,$conn);
-// mysql_close($conn);
 $dsn = "mysql:host=211.66.88.168;dbname=yizhi";
 $db = new PDO($dsn, 'zhijie', 'bgyrtksithv,1*&($AC');
 $db->exec($sql);
