@@ -12,6 +12,13 @@ $log = Log::Init($logHandler, 15);
 $tools = new JsApiPay();
 $openId = $tools->GetOpenid();
 
+//存储商户号到数据库
+$conn = mysql_connect('211.66.88.168','zhijie','bgyrtksithv,1*&($AC');
+mysql_select_db('yizhi',$conn);
+$sql = "update set adminorder out_trade_no = '".WxPayConfig::MCHID.date("YmdHis")."' where order_num = '".$_GET['order_num']."'";
+mysql_query($sql,$conn);
+mysql_close($conn);
+
 //②、统一下单
 $input = new WxPayUnifiedOrder();
 $input->SetBody($_GET['content']);

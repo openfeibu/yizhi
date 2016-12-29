@@ -29,6 +29,7 @@ class Order extends Model implements AuthenticatableContract,
     }
 
     public static function bookOrder($openid,$car_id,$mobile,$username,$number,$time,$start_details,$end_details){
+        date_default_timezone_set("Asia/Shanghai");
     	Session::set('time',$time);
     	$getSchedulesOne = Schedules::select(DB::raw('adminschedules.id as car_id,adminschedules.time,adminschedules.start_place,adminschedules.end_place,adminschedules.seat_number,adminschedules.price,overPlus.overplus'))
                         ->leftJoin('overPlus', function($join) {
@@ -65,5 +66,21 @@ class Order extends Model implements AuthenticatableContract,
             'order_num' => "YZ".date('YmdHis').$user->id,
             'all_price' => $getSchedulesOne['price']*$number,
         ];
+    }
+    public static function getMyOrder($openid){
+        $user = User::select(DB::raw('id'))->where('openid',$openid)->first();
+        return Order::select(DB::raw("adminorder.order_num,adminorder.start_details,adminorder.end_details,username,mobile,adminorder.start_time,adminorder.number,adminorder.price,adminorder.all_price,case adminorder.status
+                        WHEN 'notpayment' THEN '未付款'
+                        WHEN 'unfinished' THEN '未完成(已付款)'
+                        WHEN 'finished' THEN '已完成'
+                        WHEN 'refunding' THEN '退款中'
+                        WHEN 'refunded' THEN '已退款'
+                        WHEN 'notpayment' THEN '未付款'
+                        else '待定状态'
+                        end  as status,adminschedules.start_place,adminschedules.end_place,adminorder.created_at"))
+                    ->leftJoin('adminschedules','adminorder.schedules_id','=','adminschedules.id')
+                    ->where('user_id',$user->id)
+                    ->orderBy('adminorder.id','DESC')
+                    ->get();
     }
 }

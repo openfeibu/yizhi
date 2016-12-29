@@ -26,5 +26,6 @@ Route::get('getServicePhone', 'ServicePhoneController@getServicePhone')->name('g
 Route::get('getUserNotice', 'CommonController@getUserNotice')->name('getUserNotice');
 
 Route::get('order/bookOrder', 'OrderController@bookOrder')->name('bookOrder');
+Route::get('order/getMyOrder', 'OrderController@getMyOrder')->name('getMyOrder');
 
 Route::post('pay/payCallBack', 'CommonController@payCallBack')->name('payCallBack');

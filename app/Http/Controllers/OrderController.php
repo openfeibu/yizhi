@@ -12,6 +12,7 @@ use App\Http\Controllers\CommonController;
 class OrderController extends Controller
 {
 	public function bookOrder(Request $request){
+        date_default_timezone_set("Asia/Shanghai");
         $rules = [
             'openid' => 'required',
             'car_id' => 'required',
@@ -49,6 +50,15 @@ class OrderController extends Controller
         $content = $request->start_details."--".$request->end_details;
         header("Location:http://yizhi.feibu.info/wechat/weChatPay/example/jsapi.php?content=".$content."&price=".$bookOrder['all_price']."&order_num=".$bookOrder['order_num']."");
 
+    }
+
+    public function getMyOrder(Request $request){
+        $order = Order::getMyOrder($request->openid);
+        return [
+            'code'=>200,
+            'detail'=>"请求成功",
+            'data' => $order
+        ];
     }
 
 
