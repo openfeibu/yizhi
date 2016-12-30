@@ -83,4 +83,19 @@ class Order extends Model implements AuthenticatableContract,
                     ->orderBy('adminorder.id','DESC')
                     ->get();
     }
+
+    public static function getOrderDetail($order_num){
+        return Order::select(DB::raw("adminorder.order_num,adminorder.start_details,adminorder.end_details,username,mobile,adminorder.start_time,adminorder.number,adminorder.price,adminorder.all_price,case adminorder.status
+                        WHEN 'notpayment' THEN '未付款'
+                        WHEN 'unfinished' THEN '未完成(已付款)'
+                        WHEN 'finished' THEN '已完成'
+                        WHEN 'refunding' THEN '退款中'
+                        WHEN 'refunded' THEN '已退款'
+                        WHEN 'notpayment' THEN '未付款'
+                        else '待定状态'
+                        end  as status,adminschedules.start_place,adminschedules.end_place,adminorder.created_at"))
+                    ->leftJoin('adminschedules','adminorder.schedules_id','=','adminschedules.id')
+                    ->where('order_num',$order_num)
+                    ->first();
+    }
 }

@@ -53,11 +53,32 @@ class OrderController extends Controller
     }
 
     public function getMyOrder(Request $request){
+        if($this->checkOpenid($request) != 200){
+            return $this->checkOpenid($request);
+        }
         $order = Order::getMyOrder($request->openid);
         return [
             'code'=>200,
             'detail'=>"请求成功",
             'data' => $order
+        ];
+    }
+
+    public function getOrderDetail(Request $request){
+        $rules = [
+            'order_num' => 'required',
+        ];
+        if($this->validateParameter($request,$rules)!= 200){
+            return $this->validateParameter($request,$rules);
+        }
+        if($this->checkOpenid($request) != 200){
+            return $this->checkOpenid($request);
+        }
+        $getOrderDetail = Order::getOrderDetail($request->order_num);
+        return [
+            'code'=>200,
+            'detail'=>"请求成功",
+            'data' => $getOrderDetail
         ];
     }
 

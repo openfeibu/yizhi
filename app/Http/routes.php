@@ -27,5 +27,6 @@ Route::get('getUserNotice', 'CommonController@getUserNotice')->name('getUserNoti
 
 Route::get('order/bookOrder', 'OrderController@bookOrder')->name('bookOrder');
 Route::get('order/getMyOrder', 'OrderController@getMyOrder')->name('getMyOrder');
+Route::get('order/getOrderDetail', 'OrderController@getOrderDetail')->name('getOrderDetail');
 
 Route::post('pay/payCallBack', 'CommonController@payCallBack')->name('payCallBack');
