@@ -33,6 +33,7 @@ if(isset($_REQUEST["out_trade_no"]) && $_REQUEST["out_trade_no"] != ""){
 	$out_trade_no = $_REQUEST["out_trade_no"];
 	$input = new WxPayRefundQuery();
 	$input->SetOut_trade_no($out_trade_no);
+	echo 123123;
 	printf_info(WxPayApi::refundQuery($input));
 	exit();
 }
