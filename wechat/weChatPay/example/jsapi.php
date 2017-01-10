@@ -13,29 +13,30 @@ $tools = new JsApiPay();
 $openId = $tools->GetOpenid();
 
 //存储商户号到数据库
-$sql = "update adminorder set out_trade_no = '".WxPayConfig::MCHID.date("YmdHis")."' where order_num = '".$_GET['order_num']."'";
+$sql = "update adminorder set out_trade_no = '".WxPayConfig::MCHID.date("YmdHis")."' where order_num = '".$_POST['order_num']."'";
 $dsn = "mysql:host=211.66.88.168;dbname=yizhi";
 $db = new PDO($dsn, 'zhijie', 'bgyrtksithv,1*&($AC');
 $db->exec($sql);
 
 //②、统一下单
 $input = new WxPayUnifiedOrder();
-$input->SetBody($_GET['content']);
+$input->SetBody($adminorder['content']);
 $input->SetAttach("城际快车");
 $input->SetOut_trade_no(WxPayConfig::MCHID.date("YmdHis"));
-$input->SetTotal_fee($_GET['price']*100);
+// $input->SetTotal_fee($adminorder['price']);
+$input->SetTotal_fee("1");
 $input->SetTime_start(date("YmdHis"));
 $input->SetTime_expire(date("YmdHis", time() + 600));
 $input->SetGoods_tag("城际快车");
-$input->SetNotify_url("http://paysdk.weixin.qq.com/example/notify.php");
+$input->SetNotify_url("http://yizhi.feibu.info/server.php/order/getMyOrder?openid=$adminorder[openid]");
 $input->SetTrade_type("JSAPI");
 $input->SetOpenid($openId);
 $order = WxPayApi::unifiedOrder($input);
 $jsApiParameters = $tools->GetJsApiParameters($order);
-echo $jsApiParameters;
+// echo $jsApiParameters;
 ?>
 
-<!-- <html>
+<html>
 <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -45,8 +46,7 @@ echo $jsApiParameters;
 	</script>
 </head>
 <body>
-<input type="hidden" name="order_num" id="order_num" value="<?php echo $_GET['order_num'];?>">
-
+<input type="hidden" name="order_num" id="order_num" value="<?php echo $_POST['order_num'];?>">
 </body>
 <script type="text/javascript">
 	//调用微信JS api 支付
@@ -61,7 +61,14 @@ echo $jsApiParameters;
 			        async: false
 			    });
 				$.post('http://211.66.88.168/yizhi/server.php/pay/payCallBack','msg='+res.err_msg+"&order_num="+$('#order_num').val(),function(data){
-
+					da = data.data;
+					if(data.code == 200){
+						//付款成功跳转到推送页面
+						window.location.href="http://yizhi.feibu.info/wechat/send_msg.php?number="+da['number']+"&all_price="+da['all_price']+"&order_num="+da['order_num'];
+					}else{
+						//付款失败直接跳到订单详情页面
+						window.location.href="http://yizhi.feibu.info/yizhidemo/orderDetail.php?order_num="+da['order_num'];
+					}
 				});
 
 				// alert(res.err_code+res.err_desc+res.err_msg);
@@ -84,4 +91,4 @@ echo $jsApiParameters;
 	}
 	callpay();
 </script>
-</html> -->
+</html>
