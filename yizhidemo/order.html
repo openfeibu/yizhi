@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html lang="en"  style="height:100%">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta content="telephone=no" name="format-detection" />
+  <meta name="screen-orientation" content="portrait">
+  <meta name="x5-orientation" content="portrait">
+  <title>我的订单</title>
+  <meta name="Keywords" content="" />
+  <meta name="Description" content="" />
+  <link rel="stylesheet" type="text/css" href="css/common.css">
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/allen.js"></script>
+</head>
+<body style="height:100%">
+   <div class="main order">
+      <div class="order-item clearfix">
+      <a href="orderDetail.html">
+        <div class="order_header">
+           <div class="order_num">订单号：NO0021145</div>
+            <div class="order_state">订单已成功</div>
+        </div>
+        <div class="clearfix">
+          <div class="position">
+            <div class="qidian">广州天河</div>
+            <div class="zhongdian">清远大学城</div>
+          </div>
+          <div class="ticket_money_num">
+              <div class="ticket_money">票价：60元</div>
+          </div>
+        </div>
+        <div class="order_bottom">
+          <div class="order_time">2016-08-12 7:30</div>
+          <div class="order_num">数量 1 </div>
+          <div class="order_money">总价：60元</div>
+        </div>
+        </a>
+      </div><!--order-item end -->
+      <div class="order-item clearfix">
+      <a href="orderDetail.html">
+        <div class="order_header">
+           <div class="order_num">订单号：NO0021145</div>
+            <div class="order_state">订单已成功</div>
+        </div>
+        <div class="clearfix">
+          <div class="position">
+            <div class="qidian">广州天河</div>
+            <div class="zhongdian">清远大学城</div>
+          </div>
+          <div class="ticket_money_num">
+              <div class="ticket_money">票价：60元</div>
+          </div>
+        </div>
+        <div class="order_bottom">
+          <div class="order_time">2016-08-12 7:30</div>
+          <div class="order_num">数量 1 </div>
+          <div class="order_money">总价：60元</div>
+        </div>
+        </a>
+      </div><!--order-item end -->
+      <div class="order-item clearfix">
+      <a href="orderDetail.html">
+        <div class="order_header">
+           <div class="order_num">订单号：NO0021145</div>
+            <div class="order_state">订单已成功</div>
+        </div>
+        <div class="clearfix">
+          <div class="position">
+            <div class="qidian">广州天河</div>
+            <div class="zhongdian">清远大学城</div>
+          </div>
+          <div class="ticket_money_num">
+              <div class="ticket_money">票价：60元</div>
+          </div>
+        </div>
+        <div class="order_bottom">
+          <div class="order_time">2016-08-12 7:30</div>
+          <div class="order_num">数量 1 </div>
+          <div class="order_money">总价：60元</div>
+        </div>
+        </a>
+      </div><!--order-item end -->
+     
+   </div>
+  
+</body> 
+<script>
+    $(function(){
+      // loading02(true);
+      getOrderList();
+      function getOrderList(){
+        //获取客服电话
+         $.getJSON(localhost+'/order/getMyOrder?openid='+openid,
+          function(data){
+          loading02(false);
+           if(data.code == 200){
+              var ordHtml = '';
+              $.each(data.data,function(a,b){
+                ordHtml += '<div class="order-item clearfix">\
+                              <a href="orderDetail.html">\
+                                <div class="order_header">\
+                                   <div class="order_num">订单号：'+b.order_num+'</div>\
+                                    <div class="order_state">'+b.status+'</div>\
+                                </div>\
+                                <div class="clearfix">\
+                                  <div class="position">\
+                                    <div class="qidian">'+b.start_place+b.end_details+'</div>\
+                                    <div class="zhongdian">'+b.end_place+b.start_details+'</div>\
+                                  </div>\
+                                  <div class="ticket_money_num">\
+                                      <div class="ticket_money">票价：'+b.price+'元</div>\
+                                  </div>\
+                                </div>\
+                                <div class="order_bottom">\
+                                  <div class="order_time">'+b.created_at+'</div>\
+                                  <div class="order_num">数量 '+b.number+' </div>\
+                                  <div class="order_money">总价：'+b.all_price+'元</div>\
+                                </div>\
+                                </a>\
+                              </div>'; 
+              }) 
+              $(".order").html(ordHtml);
+           }
+          })
+      }
+    })
+</script>
+</html>

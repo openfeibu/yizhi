@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+<html lang="en"  style="height:100%">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta content="telephone=no" name="format-detection" />
+  <meta name="screen-orientation" content="portrait">
+  <meta name="x5-orientation" content="portrait">
+  <title>易至订票</title>
+  <meta name="Keywords" content="" />
+  <meta name="Description" content="" />
+  <link rel="stylesheet" type="text/css" href="css/common.css">
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/allen.js"></script>
+</head>
+<body style="height:100%">
+   <div class="main ">
+      <div class="notice">
+          <div class="notice_title">公告</div>
+          <div class="notice_con">
+            易至正在搜索中...
+          </div>
+      </div>
+
+      <div class="map">
+         <div class="name_title">易至出行</div>
+        <div class="first_map">
+          <select name="first_city01" value="" onchange="changeMap(this)">
+            <option value="0" checked>请选择</option>
+          </select>
+          <select name="first_city02" value="" onchange="changeMap(this)">
+            <option value="0" checked>请选择</option>
+          </select>
+          <select name="first_city03" value="">
+            <option value="0" checked>请选择</option>
+          </select>
+          <input type="text" name="first_position" value="" placeholder="请输入你的住址">
+        </div>
+        <div class="last_map">
+          <select name="first_city01" value="" onchange="changeMap(this)">
+            <option value="0" checked>请选择</option>
+          </select>
+          <select name="first_city02" value="" onchange="changeMap(this)">
+            <option value="0" checked>请选择</option>
+          </select>
+          <select name="first_city03" value="">
+            <option value="0" checked>请选择</option>
+          </select>
+
+          <input type="text" name="last_position" value="" placeholder="请输入你的终点">
+        </div>
+        <div class="search_ticket">
+          <a onclick="searchTicket()">查询班次</a>
+        </div>
+        <aside>注意：接送范围只限于可选的区域内，如超出区域，概不负责</aside>
+      </div>
+   </div>
+    <footer>
+      <ul>
+        <li class="on"><a >订票</a></li>
+        <li><a href="myself.html">我的</a></li>
+      </ul>
+    </footer>
+    <div class="loading">
+      <div class="spinner">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div>
+    </div>
+    <div class="loading02">
+      <div class="spinner">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div>
+    </div>
+</body> 
+<script>
+  $(function(){
+      loading02(true);
+      //获取第一级地址 S
+      $.getJSON(localhost+'/place/getMaxPlace?openid='+openid,
+        function(data){
+         loading02(false);
+         if(data.code == 200){
+          $.each(data.data,function(a,b){
+            $("[name='first_city01']").append('<option value="'+b.place+'" pid="'+b.id+'">'+b.place+'</option>');
+          })
+         }
+        }).error(function(){
+           fb_alert('网络超时，请稍后再试')
+        })
+      //获取第一级地址 S
+      //获取下级地址 S
+     function changeMap(obj){
+        loading01(true);
+        var that = $(obj),
+        pid = that.find("option:checked").attr("pid");
+        that.nextAll("select").html('<option value="0" checked>请选择</option>');
+        if(pid == undefined){
+            return false;
+        }
+        $.getJSON(localhost+'/place/getNextPlace?openid='+openid+"&id="+pid,
+        function(data){
+          loading01(false);
+         if(data.code == 200){
+          $.each(data.data,function(a,b){
+            that.next("select").append('<option value="'+b.place+'" pid="'+b.id+'">'+b.place+'</option>');
+          })
+         }
+        }).error(function(){
+           fb_alert('网络超时，请稍后再试')
+        })
+
+     }
+     //获取下级地址 E
+     //查询票 S
+     function searchTicket(){
+        var start="",end="";//地点
+        $.each($(".first_map select"),function(a,b){
+            if($(b).find("option:checked").val() == 0){
+              fb_alert("请选择起点");
+              start = false;
+              return false;
+            }
+            start += $(b).find("option:checked").val();
+        })
+        $.each($(".last_map select"),function(a,b){
+            if($(b).find("option:checked").val() == 0){
+              fb_alert("请选择终点");
+              end = false;
+              return false;
+            }
+          end += $(b).find("option:checked").val();
+        })
+        
+        if(!start ||  !end){
+          console.log(start,end)
+          return false;
+        }else{
+          window.localStorage.start = start;
+          window.localStorage.end = end;
+        }
+        if($("[name='first_position']").val().length <= 0){
+            fb_alert("请填写你的起点");
+            return false;
+
+        }else if($("[name='last_position']").val().length <= 0){
+            fb_alert("请填写你的终点");
+            return false;
+
+        }else{
+          window.localStorage.first_position = $("[name='first_position']").val();
+          window.localStorage.last_position = $("[name='last_position']").val();
+        }
+        window.location.href="ticketList.html";
+      }
+      //查询票 E
+      //获取公告 S
+      getNotice();
+      function getNotice(){
+        $.getJSON(localhost+'/getUserNotice?openid='+openid+"&paper_id=3",
+          function(data){
+           if(data.code == 200){
+              $(".notice_con").html(data.data.content);
+           }
+        })
+      }
+      //获取公告 E
+
+     window.changeMap = changeMap;
+     window.searchTicket = searchTicket;
+  })
+</script>
+</html>

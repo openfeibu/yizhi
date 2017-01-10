@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en"  style="height:100%">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta content="telephone=no" name="format-detection" />
+  <meta name="screen-orientation" content="portrait">
+  <meta name="x5-orientation" content="portrait">
+  <title>易至订单详情</title>
+  <meta name="Keywords" content="" />
+  <meta name="Description" content="" />
+  <link rel="stylesheet" type="text/css" href="css/common.css">
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/allen.js"></script>
+</head>
+<body  style="height:100%">
+   <div class="ticketDetail">
+      <div class="ticketDetail_header">
+          <a href="">
+              <div class="position">
+                <div class="qidian" data-name="start_place">广州天河</div>
+                <span></span>
+                <div class="zhongdian" data-name="end_place">清远大学城</div>
+              </div>
+              <div class="ticket_money_num">
+                  <div class="ticket_money"  data-name="price">￥60元</div>
+                  <div class="ticket_num"  data-name="overplus">余票：60</div>
+              </div>
+          </a>
+      </div>
+      <dl>
+        <dd>
+          <label for="">出车时间：</label>
+          <div class="dd_con"  data-name="time">
+            2016-12-11 09:30
+           </div>
+        </dd>
+        <dd>
+          <label for="">上车地点：</label>
+          <div class="dd_con" data-name="start_place">
+            广州大学城XXXXX
+           </div>
+        </dd>
+        <dd>
+          <label for="">下车地点：</label>
+          <div class="dd_con" data-name="end_place">
+            清远珠坑XXXXX
+           </div>
+        </dd>
+      </dl>
+      <dl>
+        <dd>
+          <label for="">联系人：</label>
+          <div class="dd_con">
+            <input type="text" name="" placeholder="请输入你的名字" data-name="name">
+           </div>
+        </dd>
+        <dd>
+          <label for="">手机号码：</label>
+          <div class="dd_con">
+            <input type="text" name="" placeholder="请输入你的手机号码" data-name="phone">
+          </div>
+        </dd>
+        <dd>
+           <label for="">选择购票数：</label>
+          <div class="dd_con">
+            <select name="" id="" data-name="ticketNum">
+            </select>
+          </div>
+        </dd>
+      </dl>
+       <dl>
+        <dd>
+          <label for="">总价：</label>
+          <div class="dd_con count" data-name="count">
+            ￥60
+           </div>
+        </dd>
+        <dd>
+          <a href="">乘车须知</a>
+        </dd>
+      </dl>
+      <div class="buy">立即购票</div>
+   </div>
+   <div class="copy" style="display:none;">
+        Copyright © 2011-2016 易至.
+        浙ICP备 15005796号-2   浙公网安备 33010602002000号
+    </div>
+    <!-- 加载中 s-->
+    <div class="loading">
+      <div class="spinner">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div>
+    </div>
+    <div class="loading02">
+      <div class="spinner">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div>
+    </div>
+    <!-- 加载中 e -->
+</body>
+<script>
+     $(function(){
+
+        loading02(true);
+        var car_id = GetString("car_id");
+        var time = window.localStorage.time;
+        var price;//单价
+        var start_details = window.localStorage.first_position;
+        var end_details = window.localStorage.last_position;
+        getTicketDe();
+        function getTicketDe(){
+          //获取票详情
+          var postData = {
+            "openid" : openid,
+            "car_id" : car_id,
+            "time" : time
+          }
+          $.getJSON(localhost+'/schedules/getSchedulesOne',postData,function(data){
+                loading02(false);
+                 if(data.code == "200"){   
+                    var ticketHTML=""; 
+                    price = data.data.price;
+                    $('[data-name="start_place"]').text(data.data.start_place+start_details);
+                    $('[data-name="end_place"]').text(data.data.end_place+end_details);
+                    $('[data-name="price"]').text("￥"+data.data.price+"元");
+                    $('[data-name="count"]').text("￥"+data.data.price+"元");
+                    $('[data-name="overplus"]').text("余票："+data.data.overplus);
+                    $('[data-name="time"]').text(data.data.time);
+                    for(var i = 1 , c = data.data.overplus ; i <= c ; i++){
+                      if(i == 1){
+                        $('[ data-name="ticketNum"]').append('<option value="'+i+'" checked>'+i+'</option>')
+                      }else{
+                        $('[ data-name="ticketNum"]').append('<option value="'+i+'" >'+i+'</option>');
+                      }
+                    }
+                 }else{
+                    fb_alert(data.detail);
+                 }
+          }).error(function(xhr,errorText,errorType){
+                  fb_alert('网络超时，请稍后再试')
+          });
+        }
+        //修改票数
+        $('[data-name="ticketNum"]').change(function(){
+           var n = parseInt($('[data-name="ticketNum"]').val()); //用户选择的票数
+            console.log(price)
+          $('[data-name="count"]').text("￥"+price*n+"元");
+
+        })
+        //下单
+
+        $(".buy").on("click",function(){
+          //
+          var name = $('[data-name="name"]').val();
+          var phone = $('[data-name="phone"]').val();
+          var number = $('[data-name="ticketNum"]').val();
+          if(name.length <= 0){
+            fb_alert("请填写你的姓名");
+          }else if(!checkMobile(phone)){
+            fb_alert("你的手机号码格式错误");
+          }else if(number < 1){
+            fb_alert("票数不可为0");
+          }else{
+             loading01(true);
+              var postData = {
+                  "openid" : openid,
+                  "car_id" : car_id,
+                  "mobile" : phone,
+                  "number" : number,
+                  "username" : name,
+                  "start_details" : start_details,
+                  "end_details" : end_details,
+                  "time" : time
+                }
+             $.post(localhost+'/order/bookOrder',postData,function(data){
+                  loading01(false);
+                 if(data.code == "200"){   
+                    fb_alert("提交订单成功");
+                    
+                 }else{
+                    fb_alert(data.detail);
+                 }
+               })
+          }
+        })
+
+     })
+</script>
+</html>

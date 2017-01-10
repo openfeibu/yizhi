@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html lang="en"  style="height:100%">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta content="telephone=no" name="format-detection" />
+  <meta name="screen-orientation" content="portrait">
+  <meta name="x5-orientation" content="portrait">
+  <title>易至订票</title>
+  <meta name="Keywords" content="" />
+  <meta name="Description" content="" />
+  <link rel="stylesheet" type="text/css" href="css/common.css">
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/allen.js"></script>
+</head>
+<body  style="height:100%">
+      <div class="ticketList_header">
+        <div class="prevDay" data-name="ticketList_prevTime">
+          前一天
+        </div>
+        <p data-name="ticketList_nowTime">2016-12-08</p>
+        <div class="nextDay" data-name="ticketList_nextTime">
+          后一天
+        </div>
+      </div><!-- ticketList_header END -->
+      <div class="ticketList">
+        <!-- <div class="ticketList_item">
+          <a href="ticketListDetail.html">
+              <div class="time">7:30</div>
+              <div class="position">
+                <div class="qidian">广州天河</div>
+                <div class="zhongdian">清远大学城</div>
+              </div>
+              <div class="ticket_money_num">
+                  <div class="ticket_money">票价：60元</div>
+                  <div class="ticket_num">余票：60</div>
+              </div>
+          </a>
+        </div> -->
+
+   </div>
+   <div class="copy">
+        Copyright © 2011-2016 易至.
+        浙ICP备 15005796号-2   浙公网安备 33010602002000号
+    </div>
+        <!-- 加载中 s-->
+    <div class="loading">
+      <div class="spinner">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div>
+    </div>
+    <div class="loading02">
+      <div class="spinner">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div>
+    </div>
+    <!-- 加载中 e -->
+
+</body> 
+<script>
+     $(function(){
+        getTicket();
+        function getTicket(time){
+          loading02(true);
+          //获取时间
+          if(time){
+              $('[data-name="ticketList_nowTime"]').text(time);
+              $('[data-name="ticketList_prevTime"]').attr("time",getTime(-1,time));
+              $('[data-name="ticketList_nextTime"]').attr("time",getTime(1,time));
+          }else{
+              $('[data-name="ticketList_nowTime"]').text(getTime(0));
+              $('[data-name="ticketList_prevTime"]').attr("time",getTime(-1));
+              $('[data-name="ticketList_nextTime"]').attr("time",getTime(1));
+          }
+          //获取票数
+          var start = window.localStorage.start,
+          end = window.localStorage.end;
+          var postData = {
+            "openid" : openid,
+            "start" : start,
+            "end" : end,
+            "time" : time
+          }
+          $.post(localhost+'/schedules/getSchedulesList',postData,function(data){
+                loading02(false);
+                 if(data.code == "200"){   
+                  var ticketHTML=""; 
+                  $.each(data.data,function(a,b){
+                    ticketHTML += '<div class="ticketList_item">\
+                                    <a href="ticketListDetail.html?car_id='+b.car_id+'">\
+                                        <div class="time">'+b.time+'</div>\
+                                        <div class="position">\
+                                          <div class="qidian">'+b.start_place+'</div>\
+                                          <div class="zhongdian">'+b.end_place+'</div>\
+                                        </div>\
+                                        <div class="ticket_money_num">\
+                                            <div class="ticket_money">票价：'+b.price+'元</div>\
+                                            <div class="ticket_num">余票：'+b.overplus+'</div>\
+                                        </div>\
+                                    </a>\
+                                  </div>'
+                  })
+                  $(".ticketList").html(ticketHTML);
+                 }else{
+                    fb_alert(data.detail);
+                 }
+          }).error(function(xhr,errorText,errorType){
+                   fb_alert('网络超时，请稍后再试')
+              });
+        }
+        $(".prevDay , .nextDay").on("click",function(){
+            var time = $(this).attr("time");
+            window.localStorage.time = time;
+            getTicket(time);
+        })
+     })
+</script>
+</html>
