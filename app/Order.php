@@ -77,6 +77,7 @@ class Order extends Model implements AuthenticatableContract,
                         end  as status,adminschedules.start_place,adminschedules.end_place,adminorder.created_at"))
                     ->leftJoin('adminschedules','adminorder.schedules_id','=','adminschedules.id')
                     ->where('user_id',$user->id)
+                    ->whereNull('adminorder.deleted_at')
                     ->orderBy('adminorder.id','DESC')
                     ->get();
     }
