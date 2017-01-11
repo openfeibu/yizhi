@@ -30,3 +30,4 @@ Route::get('order/getMyOrder', 'OrderController@getMyOrder')->name('getMyOrder')
 Route::get('order/getOrderDetail', 'OrderController@getOrderDetail')->name('getOrderDetail');
 
 Route::post('pay/payCallBack', 'CommonController@payCallBack')->name('payCallBack');
+Route::get('pay/payOrder', 'CommonController@payOrder')->name('payOrder');
