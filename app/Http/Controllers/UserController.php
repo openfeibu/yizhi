@@ -18,7 +18,7 @@ class UserController extends Controller
 	}
 	public function handleLogin(Request $request){
 		$saveUser = User::saveUser($request->openid,$request->nickname,$request->img,$request->sex,$request->city);
-		header("Location:http://www.yizhizulin.com/index.html?openid=".$request->openid."&img_url=".$request->img."&nickname=".$request->nickname);
+		header("Location:http://www.yizhizulin.com/index.html?openid=".$request->openid);
 		/* if($saveUser == 200){
 			return [
 				'code'=>200,
