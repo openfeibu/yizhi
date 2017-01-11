@@ -48,4 +48,4 @@
 		);
 	$res2=http_request($url,$array2);
 	//跳转到订单详情页面
-	header("Location:http://yizhi.feibu.info/yizhidemo/orderDetail.php?order_num=".$_GET['order_num']);
+	header("Location:http://www.yizhizulin.com/orderDetail.php?order_num=".$_GET['order_num']);

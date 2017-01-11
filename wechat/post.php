@@ -44,7 +44,7 @@
 		$state = $_GET['state'];
 
 		/*根据code获取用户openid*/
-		$url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx6116e5d137a3c7f8&secret=4113d202fa8df86a65eaed1d7b6dd51d&code=".$code."&grant_type=authorization_code";
+		$url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx0e7bd4358af64230&secret=2c0e08dceccfbf27a2df74ee68518693&code=".$code."&grant_type=authorization_code";
 
 		$abs = file_get_contents($url);
 		$obj=json_decode($abs);
@@ -57,6 +57,6 @@
 		$abs_url = "https://api.weixin.qq.com/sns/userinfo?access_token=".$access_token."&openid=".$openid."&lang=zh_CN";
 		$abs_url_data = file_get_contents($abs_url);
 		$obj_data=json_decode($abs_url_data);
-		$url = "http://211.66.88.168/yizhi/server.php/user/handleLogin?openid=".$obj_data->openid."&nickname=".$obj_data->nickname."&sex=".$obj_data->sex."&img=".$obj_data->headimgurl."&city=".$obj_data->city;
+		$url = "http://api.yizhizulin.com/server.php/user/handleLogin?openid=".$obj_data->openid."&nickname=".$obj_data->nickname."&sex=".$obj_data->sex."&img=".$obj_data->headimgurl."&city=".$obj_data->city;
 		header("Location:".$url);
 ?>

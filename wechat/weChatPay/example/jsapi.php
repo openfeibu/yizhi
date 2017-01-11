@@ -20,7 +20,7 @@ $db->exec($sql);
 
 //②、统一下单
 $input = new WxPayUnifiedOrder();
-$input->SetBody($adminorder['content']);
+$input->SetBody('123123');
 $input->SetAttach("城际快车");
 $input->SetOut_trade_no(WxPayConfig::MCHID.date("YmdHis"));
 // $input->SetTotal_fee($adminorder['price']);
@@ -28,12 +28,13 @@ $input->SetTotal_fee("1");
 $input->SetTime_start(date("YmdHis"));
 $input->SetTime_expire(date("YmdHis", time() + 600));
 $input->SetGoods_tag("城际快车");
-$input->SetNotify_url("http://yizhi.feibu.info/server.php/order/getMyOrder?openid=$adminorder[openid]");
+$input->SetNotify_url("http://api.yizhizulin.com/server.php/order/getMyOrder?openid=$adminorder[openid]");
 $input->SetTrade_type("JSAPI");
 $input->SetOpenid($openId);
 $order = WxPayApi::unifiedOrder($input);
+
 $jsApiParameters = $tools->GetJsApiParameters($order);
-// echo $jsApiParameters;
+ //echo $jsApiParameters;
 ?>
 
 <html>
@@ -60,14 +61,14 @@ $jsApiParameters = $tools->GetJsApiParameters($order);
 				$.ajaxSetup({
 			        async: false
 			    });
-				$.post('http://211.66.88.168/yizhi/server.php/pay/payCallBack','msg='+res.err_msg+"&order_num="+$('#order_num').val(),function(data){
+				$.post('http://api.yizhizulin.com/server.php/pay/payCallBack','msg='+res.err_msg+"&order_num="+$('#order_num').val(),function(data){
 					da = data.data;
 					if(data.code == 200){
 						//付款成功跳转到推送页面
-						window.location.href="http://yizhi.feibu.info/wechat/send_msg.php?number="+da['number']+"&all_price="+da['all_price']+"&order_num="+da['order_num'];
+						window.location.href="http://api.yizhizulin.com/wechat/send_msg.php?number="+da['number']+"&all_price="+da['all_price']+"&order_num="+da['order_num'];
 					}else{
 						//付款失败直接跳到订单详情页面
-						window.location.href="http://yizhi.feibu.info/yizhidemo/orderDetail.php?order_num="+da['order_num'];
+						window.location.href="http://www.yizhizulin.com/orderDetail.php?order_num="+da['order_num'];
 					}
 				});
 
@@ -89,6 +90,13 @@ $jsApiParameters = $tools->GetJsApiParameters($order);
 		    jsApiCall();
 		}
 	}
-	callpay();
+	/* callpay(); */
 </script>
+<body>
+    <br/>
+    <font color="#9ACD32"><b>该笔订单支付金额为<span style="color:#f00;font-size:50px">{$money}</span>元</b></font><br/><br/>
+	<div align="center">
+		<button style="width:210px; height:50px; border-radius: 15px;background-color:#FE6714; border:0px #FE6714 solid; cursor: pointer;  color:white;  font-size:16px;" type="button" onclick="callpay()" >立即支付</button>
+	</div>
+</body>
 </html>

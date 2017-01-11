@@ -24,8 +24,8 @@ class Order extends Model implements AuthenticatableContract,
     protected $table = 'adminorder';
 
     public static function getOverplus($overplus){
-        $over = Overplus::where('schedules_id',$overplus)->first();
-        return $over->overplus;
+        $over = Overplus::where('schedules_id',$overplus)->first();	
+        return isset($over->overplus) ? $over->overplus : 0;
     }
 
     public static function bookOrder($openid,$car_id,$mobile,$username,$number,$time,$start_details,$end_details){

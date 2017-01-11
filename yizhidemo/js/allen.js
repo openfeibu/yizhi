@@ -30,7 +30,7 @@
 })() 
 var openid,
 // localhost = "http://192.168.0.146:8094";
-localhost = "http://yizhi.feibu.info/";
+localhost = "http://yizhi.feibu.info/server.php";
 //提示框
 var fb_time;
 function fb_alert(msg){
