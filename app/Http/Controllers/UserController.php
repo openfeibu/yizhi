@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Log;
 use App\Http\Controllers\Controller;
 use App\User;
+use DB;
 
 class UserController extends Controller
 {
@@ -34,5 +35,17 @@ class UserController extends Controller
 				'detail'=>"请求失败"
 			];
 		} */
+	}
+
+	public function getUserInfo(Request $request){
+		if($this->checkOpenid($request) != 200){
+            return $this->checkOpenid($request);
+        }
+		$user  = User::select(DB::raw('nickname,img_url'))->where('openid',$request->openid)->first();
+		return [
+				'code'=>200,
+				'detail'=>"请求成功",
+				'data' => $user
+			];
 	}
 }

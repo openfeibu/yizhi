@@ -41,7 +41,7 @@ class OrderController extends Controller
 				$overplus = $getSchedulesOne['seat_number'];
 			}else{
 				$overplus = $getSchedulesOne->overplus;
-			}			
+			}
 		}
         if($request->number > $overplus){
             return [
@@ -51,11 +51,6 @@ class OrderController extends Controller
             ];
         }
         $bookOrder = Order::bookOrder($request->openid,$request->car_id,$request->mobile,$request->username,$request->number,$time,$request->start_details,$request->end_details);
-        // return [
-        //     'code'=>200,
-        //     'detail'=>"请求成功",
-        //     'data' => $bookOrder
-        // ];
         $content = $request->start_details."--".$request->end_details;
 		return [
             'code'=>200,
@@ -96,5 +91,29 @@ class OrderController extends Controller
         ];
     }
 
+    public function cancelOrder(Request $request){
+        $rules = [
+            'order_num' => 'required',
+        ];
+        if($this->validateParameter($request,$rules)!= 200){
+            return $this->validateParameter($request,$rules);
+        }
+        if($this->checkOpenid($request) != 200){
+            return $this->checkOpenid($request);
+        }
+        $cancelOrder = Order::cancelOrder($request->openid,$request->order_num);
+        if($cancelOrder){
+            return [
+                'code'=>200,
+                'detail'=>"请求成功",
+            ];
+        }else{
+            return [
+                'code'=>403,
+                'detail'=>"请求失败",
+            ];
+        }
+
+    }
 
 }
