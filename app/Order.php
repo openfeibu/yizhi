@@ -24,7 +24,7 @@ class Order extends Model implements AuthenticatableContract,
     protected $table = 'adminorder';
 
     public static function getOverplus($overplus){
-        $over = Overplus::where('schedules_id',$overplus)->first();	
+        $over = Overplus::where('schedules_id',$overplus)->first();
         return isset($over->overplus) ? $over->overplus : 0;
     }
 
@@ -71,11 +71,8 @@ class Order extends Model implements AuthenticatableContract,
         $user = User::select(DB::raw('id'))->where('openid',$openid)->first();
         return Order::select(DB::raw("adminorder.order_num,adminorder.start_details,adminorder.end_details,username,mobile,adminorder.start_time,adminorder.number,adminorder.price,adminorder.all_price,case adminorder.status
                         WHEN 'notpayment' THEN '未付款'
-                        WHEN 'unfinished' THEN '未完成(已付款)'
-                        WHEN 'finished' THEN '已完成'
-                        WHEN 'refunding' THEN '退款中'
+                        WHEN 'finished' THEN '已付款'
                         WHEN 'refunded' THEN '已退款'
-                        WHEN 'notpayment' THEN '未付款'
                         else '待定状态'
                         end  as status,adminschedules.start_place,adminschedules.end_place,adminorder.created_at"))
                     ->leftJoin('adminschedules','adminorder.schedules_id','=','adminschedules.id')
@@ -87,15 +84,26 @@ class Order extends Model implements AuthenticatableContract,
     public static function getOrderDetail($order_num){
         return Order::select(DB::raw("adminorder.order_num,adminorder.start_details,adminorder.end_details,username,mobile,adminorder.start_time,adminorder.number,adminorder.price,adminorder.all_price,case adminorder.status
                         WHEN 'notpayment' THEN '未付款'
-                        WHEN 'unfinished' THEN '未完成(已付款)'
-                        WHEN 'finished' THEN '已完成'
-                        WHEN 'refunding' THEN '退款中'
+                        WHEN 'finished' THEN '已付款'
                         WHEN 'refunded' THEN '已退款'
-                        WHEN 'notpayment' THEN '未付款'
                         else '待定状态'
                         end  as status,adminschedules.start_place,adminschedules.end_place,adminorder.created_at"))
                     ->leftJoin('adminschedules','adminorder.schedules_id','=','adminschedules.id')
                     ->where('order_num',$order_num)
                     ->first();
+    }
+
+    public static function cancelOrder($openid,$order_num){
+        $order = Order::where('order_num',$order_num)->first();
+        $user = User::select(DB::raw('openid'))->where('id',$order->user_id)->first();
+        if($user->openid != $openid){
+            return false;
+        }
+        $order->deleted_at =date('Y-m-d H:i:s');
+        if($order->save()){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
