@@ -15,6 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('user/login', 'UserController@login')->name('user_login');
+Route::get('user/getUserInfo', 'UserController@getUserInfo')->name('getUserInfo');
 Route::get('user/handleLogin', 'UserController@handleLogin')->name('user_handleLogin');
 Route::get('place/getMaxPlace', 'PlaceController@getMaxPlace')->name('place_getMaxPlace');
 Route::get('place/getNextPlace', 'PlaceController@getNextPlace')->name('place_getNextPlace');
@@ -28,6 +29,7 @@ Route::get('getUserNotice', 'CommonController@getUserNotice')->name('getUserNoti
 Route::get('order/bookOrder', 'OrderController@bookOrder')->name('bookOrder');
 Route::get('order/getMyOrder', 'OrderController@getMyOrder')->name('getMyOrder');
 Route::get('order/getOrderDetail', 'OrderController@getOrderDetail')->name('getOrderDetail');
+Route::get('order/cancelOrder', 'OrderController@cancelOrder')->name('cancelOrder');
 
 Route::post('pay/payCallBack', 'CommonController@payCallBack')->name('payCallBack');
 Route::get('pay/payOrder', 'CommonController@payOrder')->name('payOrder');
